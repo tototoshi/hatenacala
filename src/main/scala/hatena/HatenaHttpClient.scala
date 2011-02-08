@@ -44,17 +44,31 @@ class HatenaHttpClient(user: HatenaUser) {
     }
   }
 
-  def POST(url: String, file: File): Boolean = {
+  def POST(url: String, draftFile: DraftFile): Boolean = {
+    println(draftFile.toXML.toString)
+    POST(url, draftFile.toXML.toString)
+  }
+
+  private def POST(url: String, entity: HttpEntity): Boolean = {
     val request: HttpPost = new HttpPost(url)
     request.addHeader("X-WSSE", wsseHeaderValue)
-    val contentType: String = "text/plain; charset=\"UTF-8\""
-    val data: HttpEntity = new FileEntity(file, contentType)
-    request.setEntity(data)
+    request.setEntity(entity)
     val response: HttpResponse = httpClient.execute(request)
     val statusCode: Int = response.getStatusLine.getStatusCode
     statusCode / 100 match {
       case 2 => true
       case _ => false
     }
+  }
+
+  def POST(url: String, txt: String): Boolean = {
+    val charset = "UTF-8"
+    POST(url, new StringEntity(txt, charset))
+  }
+
+  def POST(url: String, file: File): Boolean = {
+    val contentType: String = "text/plain; charset=\"UTF-8\""
+    val fileEntity: HttpEntity = new FileEntity(file, contentType)
+    POST(url: String, fileEntity)
   }
 }

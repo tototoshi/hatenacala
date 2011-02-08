@@ -4,7 +4,7 @@ import java.io.{ File, FileInputStream}
 
 
 object HatenaProps {
-  val propsFileName = "/.hatenarc"
+  val propsFileName = "/.hatena.properties"
   val props = System.getProperties
   val homeDir = props.getProperty("user.home")
   props.load(new FileInputStream(new File(homeDir + propsFileName)))
