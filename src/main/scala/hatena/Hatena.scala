@@ -15,6 +15,7 @@ object Hatena {
         case "list" => Draft.list.foreach(println)
         case "save" => Draft.save(args(2))
         case "add"  => Draft.add(args(2))
+        case "rm"  => Draft.rm(args(2))
       }
     }
   }

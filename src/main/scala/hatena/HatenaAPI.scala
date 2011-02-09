@@ -1,12 +1,14 @@
 package jp.ddo.ttoshi.hatena
 
 class HatenaAPI (val user: HatenaUser){
-  private val userID = user.name
-  private val atom = "atom"
-  private val blog = "blog"
-  private val draft = "draft"
-  private val base = "http://d.hatena.ne.jp"
-  val list = List(base, userID, atom, blog).mkString("/")
-  val drafts = List(base, userID, atom, draft).mkString("/")
-  def draft(entryID: String): String = List(base, userID, atom, draft, entryID).mkString("/")
+  val base: URL = new URL("http://d.hatena.ne.jp")
+  val userID = user.name
+  val atom = "atom"
+  val blog = "blog"
+  val draft = base / userID / atom / "draft"
+  val list = base / userID / atom / blog
+}
+
+class URL(val is: String) {
+  def /(child: String) = new URL(is + "/" + child)
 }

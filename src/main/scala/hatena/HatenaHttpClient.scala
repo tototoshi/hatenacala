@@ -31,8 +31,8 @@ class HatenaHttpClient(user: HatenaUser) {
     xml
   }
 
-  def GET(url: String): Elem =  {
-    val request: HttpGet = new HttpGet(url)
+  def GET(url: URL): Elem =  {
+    val request: HttpGet = new HttpGet(url.is)
     request.addHeader("X-WSSE", wsseHeaderValue)
     val response: HttpResponse = httpClient.execute(request)
     val entity: Option[HttpEntity] = getEntity(response)
@@ -44,13 +44,13 @@ class HatenaHttpClient(user: HatenaUser) {
     }
   }
 
-  def POST(url: String, draftFile: DraftFile): Boolean = {
+  def POST(url: URL, draftFile: DraftFile): Boolean = {
     println(draftFile.toXML.toString)
     POST(url, draftFile.toXML.toString)
   }
 
-  private def POST(url: String, entity: HttpEntity): Boolean = {
-    val request: HttpPost = new HttpPost(url)
+  private def POST(url: URL, entity: HttpEntity): Boolean = {
+    val request: HttpPost = new HttpPost(url.is)
     request.addHeader("X-WSSE", wsseHeaderValue)
     request.setEntity(entity)
     val response: HttpResponse = httpClient.execute(request)
@@ -61,14 +61,28 @@ class HatenaHttpClient(user: HatenaUser) {
     }
   }
 
-  def POST(url: String, txt: String): Boolean = {
+  def POST(url: URL, txt: String): Boolean = {
     val charset = "UTF-8"
     POST(url, new StringEntity(txt, charset))
   }
 
-  def POST(url: String, file: File): Boolean = {
+  def POST(url: URL, file: File): Boolean = {
     val contentType: String = "text/plain; charset=\"UTF-8\""
     val fileEntity: HttpEntity = new FileEntity(file, contentType)
-    POST(url: String, fileEntity)
+    POST(url, fileEntity)
   }
+
+  def DELETE(url: URL): Boolean = {
+    val request = new HttpDelete(url.is)
+    println(url.is)
+    request.addHeader("X-WSSE", wsseHeaderValue)
+    val response: HttpResponse =  httpClient.execute(request)
+    val statusCode: Int = response.getStatusLine.getStatusCode
+    println(statusCode)
+    statusCode / 100 match {
+      case 2 => true
+      case _ => false
+    }
+  }
+
 }
