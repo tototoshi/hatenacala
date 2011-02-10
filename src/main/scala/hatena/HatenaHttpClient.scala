@@ -9,12 +9,15 @@ import org.apache.http.client._
 import org.apache.http.client.methods._
 import org.apache.http.entity._
 import org.apache.http.impl.client._
+import org.apache.http.impl.conn._
+
 
 class HatenaHttpClient(user: HatenaUser) {
   val API :HatenaAPI = new HatenaAPI(user)
-  val httpClient :HttpClient = new DefaultHttpClient()
+  val httpClient :DefaultHttpClient = new DefaultHttpClient()
+  val routePlanner = new ProxySelectorRoutePlanner(httpClient.getConnectionManager.getSchemeRegistry, ProxySelector.getDefault)
+  httpClient.setRoutePlanner(routePlanner);
   lazy val wsseHeaderValue = (new WSSE(user)).header
-
   private def getEntity(response: HttpResponse) :Option[HttpEntity] = {
     val statusCode: Int = response.getStatusLine().getStatusCode()
     val entity: HttpEntity = response.getEntity
