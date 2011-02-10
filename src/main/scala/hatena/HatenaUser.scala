@@ -1,5 +1,5 @@
-package jp.ddo.ttoshi.hatena
+package com.tototoshi.hatena
 
-import jp.ddo.ttoshi.wsse._
+import com.tototoshi.wsse._
 
 class HatenaUser(name: String, password: String) extends WSSEUser(name, password)

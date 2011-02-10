@@ -1,10 +1,10 @@
-package jp.ddo.ttoshi.wsse
+package com.tototoshi.wsse
 
 import java.util.Date
 import java.text.SimpleDateFormat
 import java.security._
 
-import jp.ddo.ttoshi.base64._
+import com.tototoshi.base64._
 
 class WSSEUser(val name: String, val password: String)
 

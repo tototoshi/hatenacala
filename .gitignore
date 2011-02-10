@@ -1,3 +1,6 @@
 lib/
 lib_managed/
 target/
+*.jar
+*~
+project/boot/

@@ -1,16 +1,17 @@
-package jp.ddo.ttoshi.hatena
-import jp.ddo.ttoshi.wsse._
+package com.tototoshi.hatena
 
 import java.io.File
-import scala.xml.{XML, Elem}
-import scala.io._
+import java.net.ProxySelector
 import org.apache.http._
 import org.apache.http.client._
 import org.apache.http.client.methods._
 import org.apache.http.entity._
 import org.apache.http.impl.client._
 import org.apache.http.impl.conn._
+import scala.io._
+import scala.xml.{XML, Elem}
 
+import com.tototoshi.wsse._
 
 class HatenaHttpClient(user: HatenaUser) {
   val API :HatenaAPI = new HatenaAPI(user)
@@ -48,7 +49,6 @@ class HatenaHttpClient(user: HatenaUser) {
   }
 
   def POST(url: URL, draftFile: DraftFile): Boolean = {
-    println(draftFile.toXML.toString)
     POST(url, draftFile.toXML.toString)
   }
 
@@ -75,13 +75,38 @@ class HatenaHttpClient(user: HatenaUser) {
     POST(url, fileEntity)
   }
 
+  def PUT(url: URL, draftFile: DraftFile): Boolean = {
+    POST(url, draftFile.toXML.toString)
+  }
+
+  private def PUT(url: URL, entity: HttpEntity): Boolean = {
+    val request: HttpPost = new HttpPost(url.is)
+    request.addHeader("X-WSSE", wsseHeaderValue)
+    request.setEntity(entity)
+    val response: HttpResponse = httpClient.execute(request)
+    val statusCode: Int = response.getStatusLine.getStatusCode
+    statusCode / 100 match {
+      case 2 => true
+      case _ => false
+    }
+  }
+
+  def PUT(url: URL, txt: String): Boolean = {
+    val charset = "UTF-8"
+    PUT(url, new StringEntity(txt, charset))
+  }
+
+  def PUT(url: URL, file: File): Boolean = {
+    val contentType: String = "text/plain; charset=\"UTF-8\""
+    val fileEntity: HttpEntity = new FileEntity(file, contentType)
+    PUT(url, fileEntity)
+  }
+
   def DELETE(url: URL): Boolean = {
     val request = new HttpDelete(url.is)
-    println(url.is)
     request.addHeader("X-WSSE", wsseHeaderValue)
     val response: HttpResponse =  httpClient.execute(request)
     val statusCode: Int = response.getStatusLine.getStatusCode
-    println(statusCode)
     statusCode / 100 match {
       case 2 => true
       case _ => false

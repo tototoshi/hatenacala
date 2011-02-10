@@ -1,4 +1,4 @@
-package jp.ddo.ttoshi.hatena
+package com.tototoshi.hatena
 
 import java.io.{ File, FileInputStream}
 
