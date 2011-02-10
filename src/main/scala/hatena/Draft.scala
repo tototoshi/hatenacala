@@ -33,14 +33,14 @@ object Draft {
   def rm(id: String) {
     new HatenaHttpClient(user) DELETE(API.draft / id) match {
       case true  =>
-      case false => error("Error: Failed to remove entry.")
+      case false => println("Something is wrong. Failed to remove draft: " + id + ".")
     }
   }
 
   def dateOf(id: String): String = {
     list.find(_.id == id) match {
       case Some(entry) => entry.dateYYYYMMDD
-      case None => error("Draft Entry not found.")
+      case None => error("Draft: " + id + " not found.")
     }
   }
 
