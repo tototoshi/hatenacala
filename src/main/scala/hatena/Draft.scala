@@ -32,8 +32,8 @@ object Draft {
 
   def rm(id: String) {
     new HatenaHttpClient(user) DELETE(API.draft / id) match {
-      case true  => println("Successfully deleted.")
-      case false => println("Error")
+      case true  =>
+      case false => error("Error: Failed to remove entry.")
     }
   }
 
