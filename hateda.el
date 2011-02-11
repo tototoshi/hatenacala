@@ -30,7 +30,7 @@
 (require 'cl)
 (require 'anything)
 
-(defvar hateda-exec-path "~/bin/hateda")
+(defvar hateda-executable "~/bin/hateda")
 (defvar hateda-draft-dir "~/hateda/")
 (defvar hateda-draft-entry-regexp "Draft id: \\([1-9][0-9]*\\)  title: \\(.*\\)  date: \\([0-9]+\\)")
 (defstruct hateda-draft-entry
@@ -56,7 +56,7 @@
   (interactive)
   (write-region (point-min) (point-max) hateda-draft-tmp-file nil nil)
   (message "Wait a moment.....")
-  (shell-command (hateda-mkString `(,hateda-exec-path "draft" "add" ,hateda-draft-tmp-file) " ")))
+  (shell-command (hateda-mkString `(,hateda-executable "draft" "add" ,hateda-draft-tmp-file) " ")))
 
 (defun hateda-mkString (lst &optional spliter)
   (reduce (lambda (m o) (concat m (or spliter "") o)) lst))
@@ -65,7 +65,7 @@
   (split-string lines "\n" ))
 
 (defun hateda-draft-list ()
-  (shell-command-to-string (hateda-mkString `(,hateda-exec-path "draft" "list") " ")))
+  (shell-command-to-string (hateda-mkString `(,hateda-executable "draft" "list") " ")))
 
 (defun hateda-get-id-of-current-buffer ()
   (let ((filename (hateda-basename (buffer-file-name))))
@@ -79,7 +79,7 @@
   (message "Wait a moment.....")
   (shell-command
    (hateda-mkString
-    `(,hateda-exec-path "draft" "update" ,(hateda-get-id-of-current-buffer) ,hateda-draft-tmp-file)
+    `(,hateda-executable "draft" "update" ,(hateda-get-id-of-current-buffer) ,hateda-draft-tmp-file)
     " ")))
 
 (defun hateda-string-to-draft-entry (string)
@@ -98,7 +98,7 @@
     (mkdir hateda-draft-dir))
   (with-current-buffer (find-file (hateda-draft-make-file-name id title))
     (erase-buffer)
-    (shell-command (hateda-mkString `(,hateda-exec-path "draft" "get" ,id) " ") (current-buffer))))
+    (shell-command (hateda-mkString `(,hateda-executable "draft" "get" ,id) " ") (current-buffer))))
 
 (defun anything-hateda-draft-open-file (description)
   (message "Wait a moment....")
@@ -111,7 +111,7 @@
     (hateda-draft-rm (hateda-draft-entry-id entry))))
 
 (defun hateda-draft-rm (id)
-  (shell-command (hateda-mkString `(,hateda-exec-path "draft" "rm" ,id) " ")))
+  (shell-command (hateda-mkString `(,hateda-executable "draft" "rm" ,id) " ")))
 
 (defun anything-hateda-draft-entries-get-candidates ()
   (message "Wait a moment....")
@@ -131,3 +131,5 @@
 (defun anything-hateda ()
   (interactive)
   (anything 'anything-c-source-hateda-draft-entries))
+
+(provide 'hateda)
