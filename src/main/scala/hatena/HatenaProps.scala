@@ -40,15 +40,20 @@ object HatenaProps {
   props.load(new FileInputStream(new File(homeDir + propsFileName)))
   val name = {
     System.getProperty("hatena.username") match {
-      case null => error("Error: name is required. Check your settings.")
-      case v => v
+      case null => props.getProperty("hatena.username") match {
+        case null => error("Error: name is required. Check your settings.")
+        case p => p
+      }
+      case p => p
     }
   }
   val password = {
     System.getProperty("hatena.password") match {
-      case null => error("Error: password is required. Check your settings.")
-      case v => v
+      case null => props.getProperty("hatena.password") match {
+        case null => error("Error: name is required. Check your settings.")
+        case p => p
+      }
+      case p => p
     }
   }
-
 }
