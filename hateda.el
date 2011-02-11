@@ -118,8 +118,6 @@
   (message "Wait a moment....")
   (hateda-lines-to-list (hateda-draft-list)))
 
-(anything-hateda-draft-entries-get-candidates)
-
 (define-anything-type-attribute 'hateda
   '((action ("Open" . anything-hateda-draft-open-file)
             ("Delete" . anything-hateda-draft-rm))))
@@ -134,5 +132,3 @@
 (defun anything-hateda ()
   (interactive)
   (anything 'anything-c-source-hateda-draft-entries))
-
-
