@@ -89,7 +89,6 @@
                              :date (match-string 3 string))))
 
 (defun hateda-draft-make-file-name (id title)
-  (interactive)
   (concat
    (hateda-delete-trailing-slash hateda-draft-dir)
    "/" id "-" (hateda-char-replace ?/ ?_ title)))
