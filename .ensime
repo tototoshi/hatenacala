@@ -4,7 +4,7 @@
 
 :server-root "~/.emacs.d/ensime"
 
-:project-package "jp.ddo.ttoshi"
+:project-package "com.tototoshi.hatena"
 
 :use-sbt t
 
