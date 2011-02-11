@@ -46,7 +46,7 @@ object Hatena {
         case "list" => Draft.list.foreach(println)
         case "add"  => Draft.add(args(2))
         case "rm"  => Draft.rm(args(2))
-        case "get"  => Draft.open(args(2))
+        case "get"  => Draft.get(args(2))
         case "update"  => args.length match {
           case 4 => Draft.update(args(2), args(3))
           case _ => println(usage)

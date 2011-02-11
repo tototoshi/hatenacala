@@ -51,7 +51,7 @@ object Draft {
     new DraftCollenction(xml).entries
   }
 
-  def open(id: String) {
+  def get(id: String) {
     val entry = new DraftEntry(new HatenaHttpClient(user) GET(API.draft / id))
     println(entry.title)
     println(entry.content)
