@@ -32,13 +32,18 @@ are met:
 package com.tototoshi.hatena
 
 import java.io.{ File, FileInputStream}
+import java.util.Properties
 
 object HatenaProps {
   val propsFileName = "/.hatena.properties"
-  val props = System.getProperties
-  val homeDir = props.getProperty("user.home")
-  props.load(new FileInputStream(new File(homeDir + propsFileName)))
-  val name = {
+  val homeDir = System.getProperty("user.home")
+  val props = new Properties()
+  val propsFile = new File(propsFileName)
+  if (propsFile.exists()) {
+    println("hoge")
+    props.load(new FileInputStream(propsFile))
+  }
+  lazy val name = try {
     System.getProperty("hatena.username") match {
       case null => props.getProperty("hatena.username") match {
         case null => error("Error: name is required. Check your settings.")
@@ -47,7 +52,7 @@ object HatenaProps {
       case p => p
     }
   }
-  val password = {
+  lazy val password = {
     System.getProperty("hatena.password") match {
       case null => props.getProperty("hatena.password") match {
         case null => error("Error: name is required. Check your settings.")
