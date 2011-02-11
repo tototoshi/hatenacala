@@ -43,19 +43,12 @@ object HatenaProps {
     println("hoge")
     props.load(new FileInputStream(propsFile))
   }
-  lazy val name = try {
-    System.getProperty("hatena.username") match {
-      case null => props.getProperty("hatena.username") match {
-        case null => error("Error: name is required. Check your settings.")
-        case p => p
-      }
-      case p => p
-    }
-  }
-  lazy val password = {
-    System.getProperty("hatena.password") match {
-      case null => props.getProperty("hatena.password") match {
-        case null => error("Error: name is required. Check your settings.")
+  lazy val name = getProperty("hatena.username")
+  lazy val password = getProperty("hatena.password")
+  def getProperty(propName: String) :String = {
+    System.getProperty(propName) match {
+      case null => props.getProperty(propName) match {
+        case null => error("Error: " + propName + " is required. Check your settings.")
         case p => p
       }
       case p => p
