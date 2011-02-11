@@ -59,6 +59,7 @@ object Hatena {
 
   val usage ="""|usage:
                 |  hatena draft list
+                |  hatena draft get 'id'
                 |  hatena draft add 'filename'
                 |  hatena draft update 'id' 'filename'
                 |  hatena draft rm 'id'""".stripMargin
