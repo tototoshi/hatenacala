@@ -6,12 +6,8 @@ class ScalaHatenaProject(info: ProjectInfo) extends DefaultProject(info) with Pr
 
   override def mainClass = Some("com.tototoshi.hatena.Hatena")
 
-  def keepMainClass = """
-  -keepclasseswithmembers public class * {
-    public static void main(java.lang.String[]);
-  }
-  """
-  override def proguardDefaultArgs = "-dontwarn" :: "-dontoptimize" :: "-dontobfuscate" :: keepMainClass :: proguardOptions
+  def distPath = ((outputPath ##) / defaultJarName) +++ mainDependencies.scalaJars
 
+  lazy val dist = zipTask(distPath, "dist", "distribution.zip") dependsOn (`package`) describedAs("Zips up the project.")
 }
 

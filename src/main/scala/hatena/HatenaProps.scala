@@ -45,7 +45,7 @@ object HatenaProps {
   }
   lazy val name = getProperty("hatena.username")
   lazy val password = getProperty("hatena.password")
-  def getProperty(propName: String) :String = {
+  private def getProperty(propName: String) :String = {
     System.getProperty(propName) match {
       case null => props.getProperty(propName) match {
         case null => error("Error: " + propName + " is required. Check your settings.")

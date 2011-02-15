@@ -60,7 +60,7 @@ class HatenaHttpClient(user: HatenaUser) {
     }
   }
 
-  def entityToXML(entity: HttpEntity) :Elem = {
+  private def entityToXML(entity: HttpEntity) :Elem = {
     val src = Source.fromInputStream(entity.getContent)(Codec("UTF-8"))
     val xml = XML.loadString(src.getLines.mkString("\n"))
     src.close()
@@ -84,7 +84,7 @@ class HatenaHttpClient(user: HatenaUser) {
     POST(url, draftFile.toXML.toString)
   }
 
-  private def POST(url: URL, entity: HttpEntity): Boolean = {
+  def POST(url: URL, entity: HttpEntity): Boolean = {
     val request: HttpPost = new HttpPost(url.is)
     request.addHeader("X-WSSE", wsseHeaderValue)
     request.setEntity(entity)
@@ -111,7 +111,7 @@ class HatenaHttpClient(user: HatenaUser) {
     POST(url, draftFile.toXML.toString)
   }
 
-  private def PUT(url: URL, entity: HttpEntity): Boolean = {
+  def PUT(url: URL, entity: HttpEntity): Boolean = {
     val request: HttpPost = new HttpPost(url.is)
     request.addHeader("X-WSSE", wsseHeaderValue)
     request.setEntity(entity)
