@@ -54,9 +54,9 @@ class HatenaHttpClient(user: HatenaUser) {
   private def getEntity(response: HttpResponse) :Option[HttpEntity] = {
     val statusCode: Int = response.getStatusLine().getStatusCode()
     val entity: HttpEntity = response.getEntity
-    statusCode match {
-      case 200 => if (entity != null) Some(entity) else None
-      case _   => None
+    statusCode / 100 match {
+      case 2 => if (entity != null) Some(entity) else None
+      case _ => None
     }
   }
 
