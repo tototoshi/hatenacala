@@ -58,11 +58,11 @@ object Hatena {
   }
 
   val usage ="""|usage:
-                |  hatena draft list
-                |  hatena draft get 'id'
-                |  hatena draft add 'filename'
-                |  hatena draft update 'id' 'filename'
-                |  hatena draft rm 'id'""".stripMargin
+                |  hateda draft list
+                |  hateda draft get 'id'
+                |  hateda draft add 'filename'
+                |  hateda draft update 'id' 'filename'
+                |  hateda draft rm 'id'""".stripMargin
 
   val user: HatenaUser = new HatenaUser(HatenaProps.name, HatenaProps.password)
 }
