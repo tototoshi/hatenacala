@@ -36,21 +36,14 @@ import java.util.Properties
 
 object Hatena {
   def main(args: Array[String]) {
-    if (args.isEmpty) {
-      println(usage)
-      return
-    }
-
-    args(0).toLowerCase match {
-      case "draft" => args(1).toLowerCase match {
-        case "list" => Draft.list.foreach(println)
-        case "add"  => Draft.add(args(2))
-        case "rm"  => Draft.rm(args(2))
-        case "get"  => Draft.get(args(2))
-        case "update"  => args.length match {
-          case 4 => Draft.update(args(2), args(3))
-          case _ => println(usage)
-        }
+    args.toList match {
+      case List() => println(usage)
+      case "draft" :: xs => xs match {
+        case "list"   :: Nil      => Draft.list.foreach(println)
+        case "add"    :: filename :: Nil => Draft.add(filename)
+        case "rm"     :: id       :: Nil => Draft.rm(id)
+        case "get"    :: id       :: Nil => Draft.get(id)
+        case "update" :: id       :: filename :: Nil => Draft.update(id, filename)
         case _ => println(usage)
       }
       case _ => println(usage)
