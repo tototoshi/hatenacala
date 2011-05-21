@@ -38,9 +38,8 @@ object HatenaProps {
   val propsFileName = "/.hatena.properties"
   val homeDir = System.getProperty("user.home")
   val props = new Properties()
-  val propsFile = new File(propsFileName)
+  val propsFile = new File(homeDir, propsFileName)
   if (propsFile.exists()) {
-    println("hoge")
     props.load(new FileInputStream(propsFile))
   }
   lazy val name = getProperty("hatena.username")
