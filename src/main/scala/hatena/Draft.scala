@@ -30,7 +30,7 @@ are met:
 */
 
 
-package com.tototoshi.hatena
+package com.github.tototoshi.hatena
 
 import java.io.{File, FileInputStream}
 import java.util.{Date, Properties}

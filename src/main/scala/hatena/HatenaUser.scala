@@ -29,8 +29,8 @@ are met:
  IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.tototoshi.hatena
+package com.github.tototoshi.hatena
 
-import com.tototoshi.wsse._
+import com.github.tototoshi.wsse._
 
 class HatenaUser(name: String, password: String) extends WSSEUser(name, password)

@@ -29,7 +29,7 @@ are met:
  IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.tototoshi.hatena
+package com.github.tototoshi.hatena
 
 import scala.xml.Elem
 

@@ -30,7 +30,7 @@ are met:
 */
 
 
-package com.tototoshi.hatena
+package com.github.tototoshi.hatena
 
 import java.io.File
 import java.net.ProxySelector
@@ -43,7 +43,7 @@ import org.apache.http.impl.conn._
 import scala.io._
 import scala.xml.{XML, Elem}
 
-import com.tototoshi.wsse._
+import com.github.tototoshi.wsse._
 
 class HatenaHttpClient(user: HatenaUser) {
   val API :HatenaAPI = new HatenaAPI(user)
@@ -71,9 +71,12 @@ class HatenaHttpClient(user: HatenaUser) {
     val request: HttpGet = new HttpGet(url.is)
     request.addHeader("X-WSSE", wsseHeaderValue)
     val response: HttpResponse = httpClient.execute(request)
+    import scala.collection.JavaConversions._
+    println(request.getFirstHeader("X-WSSE"))
+    println(response)
     val entity: Option[HttpEntity] = getEntity(response)
     entity match {
-      case None => error("Error")
+      case None => sys.error("Error: Failed to get entiry. URL is %s".format(url))
       case Some(e) => {
         entityToXML(e)
       }

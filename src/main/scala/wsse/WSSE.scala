@@ -29,13 +29,11 @@ are met:
  IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.tototoshi.wsse
+package com.github.tototoshi.wsse
 
 import java.util.Date
 import java.text.SimpleDateFormat
 import java.security._
-
-import com.tototoshi.base64._
 
 class WSSEUser(val name: String, val password: String)
 
@@ -57,9 +55,9 @@ class WSSE(val userName: String, val password: String) {
     def quote(str: String): String = "\"" + str + "\""
     "UsernameToken " +
     List(("Username", userName),
-         ("PasswordDigest", Base64.encode(digest)),
-         ("Nonce", Base64.encode(nonce.getBytes)),
+         ("PasswordDigest", org.apache.commons.codec.binary.Base64.encodeBase64String(digest).trim),
+         ("Nonce", org.apache.commons.codec.binary.Base64.encodeBase64String(nonce.getBytes).trim),
          ("Created", created))
-    .map{case (k, v) => k + "=" + quote(v)}.mkString(", ")
+    .map { case (k, v) => k + "=" + quote(v) }.mkString(", ")
   }
 }

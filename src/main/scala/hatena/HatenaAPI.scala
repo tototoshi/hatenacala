@@ -29,7 +29,7 @@ are met:
  IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.tototoshi.hatena
+package com.github.tototoshi.hatena
 
 class HatenaAPI (val user: HatenaUser){
   val base: URL = new URL("http://d.hatena.ne.jp")
@@ -41,4 +41,5 @@ class HatenaAPI (val user: HatenaUser){
 
 class URL(val is: String) {
   def /(child: String) = new URL(is + "/" + child)
+  override def toString = is
 }

@@ -29,7 +29,7 @@ are met:
  IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.tototoshi.hatena
+package com.github.tototoshi.hatena
 
 import java.io.{ File, FileInputStream}
 import java.util.Properties
@@ -42,12 +42,12 @@ object HatenaProps {
   if (propsFile.exists()) {
     props.load(new FileInputStream(propsFile))
   }
-  lazy val name = getProperty("hatena.username")
-  lazy val password = getProperty("hatena.password")
+  lazy val name = getProperty("hatena.username").trim
+  lazy val password = getProperty("hatena.password").trim
   private def getProperty(propName: String) :String = {
     System.getProperty(propName) match {
       case null => props.getProperty(propName) match {
-        case null => error("Error: " + propName + " is required. Check your settings.")
+        case null => sys.error("Error: " + propName + " is required. Check your settings.")
         case p => p
       }
       case p => p
