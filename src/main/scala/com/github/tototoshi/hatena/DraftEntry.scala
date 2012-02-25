@@ -33,18 +33,22 @@ package com.github.tototoshi.hatena
 
 import scala.xml.Elem
 
-class DraftEntry(val xml: Elem) {
+class DraftEntry(val xml: Elem) extends StringUtils {
+  final val PUBLISHED_TIME_FORMAT = "yyyy-MM-dd"
+
   override def toString = "Draft id: " + id + "  title: " + title + "  date: " + dateYYYYMMDD
+
   private val entry = xml \\ "entry"
   lazy val id = (entry \ "link" \ "@href").text.split("/").last
   lazy val title = entry \ "title" text
   lazy val content = entry \ "content" text
   lazy val updated = entry \ "updated" text
   lazy val published = entry \ "published" text
-  lazy val dateYYYYMMDD: String = published.take("yyyy-MM-dd".length).filterNot(_=='-')
+  lazy val dateYYYYMMDD: String = published.take(PUBLISHED_TIME_FORMAT.length) filterNot isHighen
+
   def open() {
-    println(title)
-    println(content)
+    val out = title + "\n" + content
+    println(out)
   }
 }
 

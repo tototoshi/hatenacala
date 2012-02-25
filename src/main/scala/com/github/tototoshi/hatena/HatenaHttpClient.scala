@@ -71,9 +71,6 @@ class HatenaHttpClient(user: HatenaUser) {
     val request: HttpGet = new HttpGet(url.is)
     request.addHeader("X-WSSE", wsseHeaderValue)
     val response: HttpResponse = httpClient.execute(request)
-    import scala.collection.JavaConversions._
-    println(request.getFirstHeader("X-WSSE"))
-    println(response)
     val entity: Option[HttpEntity] = getEntity(response)
     entity match {
       case None => sys.error("Error: Failed to get entiry. URL is %s".format(url))

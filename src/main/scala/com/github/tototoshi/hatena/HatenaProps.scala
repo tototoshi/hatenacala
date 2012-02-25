@@ -34,23 +34,37 @@ package com.github.tototoshi.hatena
 import java.io.{ File, FileInputStream}
 import java.util.Properties
 
-object HatenaProps {
-  val propsFileName = "/.hatena.properties"
-  val homeDir = System.getProperty("user.home")
-  val props = new Properties()
-  val propsFile = new File(homeDir, propsFileName)
+trait HatenaPropsFile {
+  val propsFileName: String
+}
+
+trait DefaultHatenaPropsFile extends HatenaPropsFile {
+  lazy val propsFileName: String = scala.util.Properties.userHome + "/.hatena.properties"
+}
+
+trait PropsUtil {
+  def propsOrNone(props: java.util.Properties, propName: String): Option[String] = Option(props.getProperty(propName))
+  def systemPropsOrNone(propName: String) = Option(System.getProperty(propName))
+}
+
+trait HatenaProps extends PropsUtil { self: HatenaPropsFile =>
+  val props = new Properties
+  lazy val propsFile = new File(propsFileName)
+
   if (propsFile.exists()) {
     props.load(new FileInputStream(propsFile))
   }
-  lazy val name = getProperty("hatena.username").trim
-  lazy val password = getProperty("hatena.password").trim
-  private def getProperty(propName: String) :String = {
-    System.getProperty(propName) match {
-      case null => props.getProperty(propName) match {
-        case null => sys.error("Error: " + propName + " is required. Check your settings.")
-        case p => p
-      }
-      case p => p
+
+  lazy val name = prop("hatena.username")
+  lazy val password = prop("hatena.password")
+
+  private def prop(propName: String): String = {
+    (systemPropsOrNone(propName), propsOrNone(props, propName)) match {
+      case (Some(p), _) => p
+      case (_, Some(p)) => p
+      case (None, None) => sys.error("Error: " + propName + " is required. Check your settings.")
     }
   }
 }
+
+object HatenaProps extends HatenaProps with DefaultHatenaPropsFile
