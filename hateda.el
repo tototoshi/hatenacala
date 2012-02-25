@@ -29,9 +29,10 @@
 
 (require 'cl)
 (require 'anything)
+(require 'markdown-mode)
 
 (defvar hateda-executable "~/bin/hateda")
-(defvar hateda-draft-dir "~/hateda/")
+(defvar hateda-draft-dir "~/Documents/hateda/")
 (defvar hateda-draft-entry-regexp "Draft id: \\([1-9][0-9]*\\)  title: \\(.*\\)  date: \\([0-9]+\\)")
 (defstruct hateda-draft-entry
   id  title  date)
@@ -98,7 +99,8 @@
     (mkdir hateda-draft-dir))
   (with-current-buffer (find-file (hateda-draft-make-file-name id title))
     (erase-buffer)
-    (shell-command (hateda-mkString `(,hateda-executable "draft" "get" ,id) " ") (current-buffer))))
+    (shell-command (hateda-mkString `(,hateda-executable "draft" "get" ,id) " ") (current-buffer))
+    (hateda-mode)))
 
 (defun anything-hateda-draft-open-file (description)
   (message "Wait a moment....")
@@ -132,4 +134,28 @@
   (interactive)
   (anything 'anything-c-source-hateda-draft-entries))
 
+(define-generic-mode hateda-mode
+  nil nil
+  '(("^\\*[^*].*$" . markdown-header-face-1)
+    ("^\\*\\*[^*].*$" . markdown-header-face-2)
+    ("^\\*\\*\\*.*$" . markdown-header-face-3)
+    ("\\[.*:title.*\\]" . markdown-url-face)
+    ("http://[^\t\n ]+" . markdown-url-face)
+    (">>\\(?:.\\|\n\\)*?<<" . markdown-blockquote-face)
+    (">||\\(?:.\\|\n\\)*?||<" . markdown-pre-face)
+    (">|[^|]+|\\(?:.\\|\n\\)*?||<" . markdown-pre-face))
+  nil
+  (list
+   (lambda ()
+     (set (make-local-variable 'font-lock-multiline) t)
+     (setq major-mode 'hateda-mode
+           mode-name "Hateda")
+     (setq hateda-mode-local-map (make-keymap))
+     (define-key hateda-mode-local-map (kbd "C-c C-c") 'hateda-draft-update)
+     (define-key hateda-mode-local-map (kbd "C-c C-n") 'hateda-draft-add-this-buffer)
+     (define-key hateda-mode-local-map (kbd "C-c C-r") 'font-lock-fontify-buffer)
+     (use-local-map hateda-mode-local-map)
+     )))
+
 (provide 'hateda)
+
