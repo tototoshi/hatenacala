@@ -63,7 +63,7 @@
   (reduce (lambda (m o) (concat m (or spliter "") o)) lst))
 
 (defun hateda-lines-to-list (lines)
-  (split-string lines "\n" ))
+  (split-string lines "\n"))
 
 (defun hateda-draft-list ()
   (shell-command-to-string (hateda-mkString `(,hateda-executable "draft" "list") " ")))
