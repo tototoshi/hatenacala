@@ -140,7 +140,7 @@
     ("^\\*\\*[^*].*$" . markdown-header-face-2)
     ("^\\*\\*\\*.*$" . markdown-header-face-3)
     ("\\[.*:title.*\\]" . markdown-url-face)
-    ("http://[^\t\n ]+" . markdown-url-face)
+    ("https?://[^\t\n ]+" . markdown-url-face)
     (">>\\(?:.\\|\n\\)*?<<" . markdown-blockquote-face)
     (">||\\(?:.\\|\n\\)*?||<" . markdown-pre-face)
     (">|[^|]+|\\(?:.\\|\n\\)*?||<" . markdown-pre-face))
