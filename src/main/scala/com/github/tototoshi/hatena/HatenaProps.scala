@@ -59,11 +59,9 @@ trait HatenaProps extends PropsUtil { self: HatenaPropsFile =>
   lazy val password = prop("hatena.password")
 
   private def prop(propName: String): String = {
-    (systemPropsOrNone(propName), propsOrNone(props, propName)) match {
-      case (Some(p), _) => p
-      case (_, Some(p)) => p
-      case (None, None) => sys.error("Error: " + propName + " is required. Check your settings.")
-    }
+    systemPropsOrNone(propName)
+    .orElse(propsOrNone(props, propName))
+    .getOrElse(sys.error("Error: " + propName + " is required. Check your settings."))
   }
 }
 

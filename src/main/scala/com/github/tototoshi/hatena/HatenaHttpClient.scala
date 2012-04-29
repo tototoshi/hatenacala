@@ -45,104 +45,68 @@ import scala.xml.{XML, Elem}
 
 import com.github.tototoshi.wsse._
 
-class HatenaHttpClient(user: HatenaUser) {
-  val API :HatenaAPI = new HatenaAPI(user)
+class HatenaHttpClient(user: HatenaUser) extends Using {
+  val API: HatenaAPI = new HatenaAPI(user)
+
+  val charset = "UTF-8"
+  val contentType: String = "text/plain; charset=\"%s\"".format(charset)
   val httpClient :DefaultHttpClient = new DefaultHttpClient()
   val routePlanner = new ProxySelectorRoutePlanner(httpClient.getConnectionManager.getSchemeRegistry, ProxySelector.getDefault)
-  httpClient.setRoutePlanner(routePlanner);
-  lazy val wsseHeaderValue = (new WSSE(user)).header
-  private def getEntity(response: HttpResponse) :Option[HttpEntity] = {
-    val statusCode: Int = response.getStatusLine().getStatusCode()
-    val entity: HttpEntity = response.getEntity
-    statusCode / 100 match {
-      case 2 => if (entity != null) Some(entity) else None
-      case _ => None
-    }
-  }
 
-  private def entityToXML(entity: HttpEntity) :Elem = {
-    val src = Source.fromInputStream(entity.getContent)(Codec("UTF-8"))
-    val xml = XML.loadString(src.getLines.mkString("\n"))
-    src.close()
-    xml
-  }
+  httpClient.setRoutePlanner(routePlanner)
+
+  lazy val wsseHeaderValue = (new WSSE(user)).header
+
+  private def getEntity(response: HttpResponse) :Option[HttpEntity] =
+    if (response.getStatusLine.getStatusCode / 100 == 2) Option(response.getEntity) else None
+
+  private def entityToXML(entity: HttpEntity) :Elem =
+    using(Source.fromInputStream(entity.getContent)(Codec("UTF-8"))) { src =>
+      XML.loadString(src.getLines.mkString("\n"))
+    }
 
   def GET(url: URL): Elem =  {
     val request: HttpGet = new HttpGet(url.is)
     request.addHeader("X-WSSE", wsseHeaderValue)
-    val response: HttpResponse = httpClient.execute(request)
-    val entity: Option[HttpEntity] = getEntity(response)
-    entity match {
-      case None => sys.error("Error: Failed to get entiry. URL is %s".format(url))
-      case Some(e) => {
-        entityToXML(e)
-      }
-    }
+    getEntity(httpClient.execute(request)).map(entityToXML).getOrElse(sys.error("Error: Failed to get entiry. URL is %s".format(url)))
   }
 
-  def POST(url: URL, draftFile: DraftFile): Boolean = {
+  def POST(url: URL, draftFile: DraftFile): Boolean =
     POST(url, draftFile.toXML.toString)
-  }
 
   def POST(url: URL, entity: HttpEntity): Boolean = {
     val request: HttpPost = new HttpPost(url.is)
     request.addHeader("X-WSSE", wsseHeaderValue)
     request.setEntity(entity)
-    val response: HttpResponse = httpClient.execute(request)
-    val statusCode: Int = response.getStatusLine.getStatusCode
-    statusCode / 100 match {
-      case 2 => true
-      case _ => false
-    }
+    httpClient.execute(request).getStatusLine.getStatusCode / 100 == 2
   }
 
-  def POST(url: URL, txt: String): Boolean = {
-    val charset = "UTF-8"
+  def POST(url: URL, txt: String): Boolean =
     POST(url, new StringEntity(txt, charset))
-  }
 
-  def POST(url: URL, file: File): Boolean = {
-    val contentType: String = "text/plain; charset=\"UTF-8\""
-    val fileEntity: HttpEntity = new FileEntity(file, contentType)
-    POST(url, fileEntity)
-  }
+  def POST(url: URL, file: File): Boolean =
+    POST(url, new FileEntity(file, contentType))
 
-  def PUT(url: URL, draftFile: DraftFile): Boolean = {
+  def PUT(url: URL, draftFile: DraftFile): Boolean =
     POST(url, draftFile.toXML.toString)
-  }
 
   def PUT(url: URL, entity: HttpEntity): Boolean = {
     val request: HttpPost = new HttpPost(url.is)
     request.addHeader("X-WSSE", wsseHeaderValue)
     request.setEntity(entity)
-    val response: HttpResponse = httpClient.execute(request)
-    val statusCode: Int = response.getStatusLine.getStatusCode
-    statusCode / 100 match {
-      case 2 => true
-      case _ => false
-    }
+    httpClient.execute(request).getStatusLine.getStatusCode / 100 == 2
   }
 
-  def PUT(url: URL, txt: String): Boolean = {
-    val charset = "UTF-8"
+  def PUT(url: URL, txt: String): Boolean =
     PUT(url, new StringEntity(txt, charset))
-  }
 
-  def PUT(url: URL, file: File): Boolean = {
-    val contentType: String = "text/plain; charset=\"UTF-8\""
-    val fileEntity: HttpEntity = new FileEntity(file, contentType)
-    PUT(url, fileEntity)
-  }
+  def PUT(url: URL, file: File): Boolean =
+    PUT(url, new FileEntity(file, contentType))
 
   def DELETE(url: URL): Boolean = {
     val request = new HttpDelete(url.is)
     request.addHeader("X-WSSE", wsseHeaderValue)
-    val response: HttpResponse =  httpClient.execute(request)
-    val statusCode: Int = response.getStatusLine.getStatusCode
-    statusCode / 100 match {
-      case 2 => true
-      case _ => false
-    }
+    httpClient.execute(request).getStatusLine.getStatusCode / 100 == 2
   }
 
 }

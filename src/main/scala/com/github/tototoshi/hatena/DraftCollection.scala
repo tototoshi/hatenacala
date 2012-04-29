@@ -38,7 +38,8 @@ class DraftCollenction(val xml: Elem) {
 }
 
 class DraftCollectionEntry(val xml: Node) extends StringUtils {
-  override def toString = "Draft id: " + id + "  title: " + title + "  date: " + dateYYYYMMDD
+  override def toString = "Draft id: %s  title: %s  date: %s".format(id, title, dateYYYYMMDD)
+
   val title = xml \ "title" text
   lazy val id = (xml \ "link" \ "@href").text.split("/").last
   lazy val updated = xml \ "updated" text

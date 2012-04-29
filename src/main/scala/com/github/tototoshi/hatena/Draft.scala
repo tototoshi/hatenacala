@@ -32,48 +32,42 @@ are met:
 
 package com.github.tototoshi.hatena
 
-import java.io.{File, FileInputStream}
-import java.util.{Date, Properties}
+import java.io.{ File, FileInputStream }
+import java.util.{ Date, Properties }
 import java.text.SimpleDateFormat
 import scala.io.Source
-import scala.xml.{Elem, Node}
+import scala.xml.{ Elem, Node }
 
 object Draft {
   val user: HatenaUser = new HatenaUser(HatenaProps.name, HatenaProps.password)
   val API = new HatenaAPI(user)
 
-  def add(filePath: String) {
+  def add(filePath: String): Unit = {
     new HatenaHttpClient(user) POST(API.draft, new DraftFile(filePath))
   }
 
   def list(): List[DraftCollectionEntry] = {
-    val xml = new HatenaHttpClient(user) GET(API.draft)
+    val xml = new HatenaHttpClient(user).GET(API.draft)
     new DraftCollenction(xml).entries
   }
 
-  def get(id: String) {
-    val entry = new DraftEntry(new HatenaHttpClient(user) GET(API.draft / id))
+  def get(id: String): Unit =  {
+    val entry = new DraftEntry(new HatenaHttpClient(user).GET(API.draft / id))
     println(entry.title)
     println(entry.content)
   }
 
   def update(id: String, filePath: String) {
-    new HatenaHttpClient(user) PUT(API.draft / id, new DraftFile(filePath))
+    new HatenaHttpClient(user).PUT(API.draft / id, new DraftFile(filePath))
   }
 
-  def rm(id: String) {
-    new HatenaHttpClient(user) DELETE(API.draft / id) match {
-      case true  =>
-      case false => println("Something is wrong. Failed to remove draft: " + id + ".")
-    }
+  def rm(id: String): Unit = {
+    if (!new HatenaHttpClient(user).DELETE(API.draft / id))
+      println("Something is wrong. Failed to remove draft: " + id + ".")
   }
 
-  def dateOf(id: String): String = {
-    list.find(_.id == id) match {
-      case Some(entry) => entry.dateYYYYMMDD
-      case None => error("Draft: " + id + " not found.")
-    }
-  }
+  def dateOf(id: String): String =
+    list.find(_.id == id).map(_.dateYYYYMMDD).getOrElse(sys.error("Draft: " + id + " not found."))
 
 }
 
