@@ -28,7 +28,7 @@
 ;;  IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 (require 'cl)
-(require 'anything)
+(require 'helm)
 (require 'markdown-mode)
 
 (defvar hateda-executable "~/bin/hateda")
@@ -102,12 +102,12 @@
     (shell-command (hateda-mkString `(,hateda-executable "draft" "get" ,id) " ") (current-buffer))
     (hateda-mode)))
 
-(defun anything-hateda-draft-open-file (description)
+(defun helm-hateda-draft-open-file (description)
   (message "Wait a moment....")
   (let ((entry (hateda-string-to-draft-entry description)))
     (hateda-draft-open-file (hateda-draft-entry-id entry) (hateda-draft-entry-title entry))))
 
-(defun anything-hateda-draft-rm (description)
+(defun helm-hateda-draft-rm (description)
   (message "Wait a moment....")
   (let ((entry (hateda-string-to-draft-entry description)))
     (hateda-draft-rm (hateda-draft-entry-id entry))))
@@ -115,24 +115,24 @@
 (defun hateda-draft-rm (id)
   (shell-command (hateda-mkString `(,hateda-executable "draft" "rm" ,id) " ")))
 
-(defun anything-hateda-draft-entries-get-candidates ()
+(defun helm-hateda-draft-entries-get-candidates ()
   (message "Wait a moment....")
   (hateda-lines-to-list (hateda-draft-list)))
 
-(define-anything-type-attribute 'hateda
-  '((action ("Open" . anything-hateda-draft-open-file)
-            ("Delete" . anything-hateda-draft-rm))))
+(define-helm-type-attribute 'hateda
+  '((action ("Open" . helm-hateda-draft-open-file)
+            ("Delete" . helm-hateda-draft-rm))))
 
-(setq anything-c-source-hateda-draft-entries
+(setq helm-c-source-hateda-draft-entries
   '((name . "hatena-diary")
-    (candidates . anything-hateda-draft-entries-get-candidates)
+    (candidates . helm-hateda-draft-entries-get-candidates)
     (requires-pattern . 0)
     (candidate-number-limit . 50)
     (type . hateda)))
 
-(defun anything-hateda ()
+(defun helm-hateda ()
   (interactive)
-  (anything 'anything-c-source-hateda-draft-entries))
+  (helm 'helm-c-source-hateda-draft-entries))
 
 (define-generic-mode hateda-mode
   nil nil
