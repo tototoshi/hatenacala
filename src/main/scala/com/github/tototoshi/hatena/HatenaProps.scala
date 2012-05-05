@@ -33,36 +33,11 @@ package com.github.tototoshi.hatena
 
 import java.io.{ File, FileInputStream}
 import java.util.Properties
+import com.typesafe.config._
 
-trait HatenaPropsFile {
-  val propsFileName: String
+object HatenaProps {
+  val config = ConfigFactory.load()
+  lazy val name = config.getString("hatena.username")
+  lazy val password = config.getString("hatena.password")
 }
 
-trait DefaultHatenaPropsFile extends HatenaPropsFile {
-  lazy val propsFileName: String = scala.util.Properties.userHome + "/.hatena.properties"
-}
-
-trait PropsUtil {
-  def propsOrNone(props: java.util.Properties, propName: String): Option[String] = Option(props.getProperty(propName))
-  def systemPropsOrNone(propName: String) = Option(System.getProperty(propName))
-}
-
-trait HatenaProps extends PropsUtil { self: HatenaPropsFile =>
-  val props = new Properties
-  lazy val propsFile = new File(propsFileName)
-
-  if (propsFile.exists()) {
-    props.load(new FileInputStream(propsFile))
-  }
-
-  lazy val name = prop("hatena.username")
-  lazy val password = prop("hatena.password")
-
-  private def prop(propName: String): String = {
-    systemPropsOrNone(propName)
-    .orElse(propsOrNone(props, propName))
-    .getOrElse(sys.error("Error: " + propName + " is required. Check your settings."))
-  }
-}
-
-object HatenaProps extends HatenaProps with DefaultHatenaPropsFile

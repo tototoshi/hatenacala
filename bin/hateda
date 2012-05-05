@@ -1,2 +1,2 @@
 #!/bin/bash
-java $JAVA_OPTS -jar $(dirname $0)/hatenacala-assembly-0.1-SNAPSHOT.jar "$@"
+java $JAVA_OPTS -Dconfig.file=~/.hateda.conf -jar $(dirname $0)/hatenacala-assembly-0.1-SNAPSHOT.jar "$@"
