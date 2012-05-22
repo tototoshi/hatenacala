@@ -1,0 +1,9 @@
+[app]
+  version: 0.1-SNAPSHOT
+  org: com.github.tototoshi
+  name: hateda
+  class: com.github.tototoshi.hatena.Hatena
+[scala]
+  version: 2.9.1
+[repositories]
+  local

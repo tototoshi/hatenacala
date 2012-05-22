@@ -34,8 +34,29 @@ package com.github.tototoshi.hatena
 import java.io.{File, FileInputStream}
 import java.util.Properties
 
+
+class Hatena extends xsbti.AppMain {
+
+  def run(config: xsbti.AppConfiguration): Exit =
+    new Exit(Hatena.run(config.arguments))
+
+}
+
+class Exit(val code: Int) extends xsbti.Exit
+
+
 object Hatena {
-  def main(args: Array[String]) {
+
+  def run(args: Array[String]): Int = {
+    try {
+      main(args)
+      0
+    } catch {
+      case e: Exception => 1
+    }
+  }
+
+  def main(args: Array[String]): Unit = {
     args.toList match {
       case List() => println(usage)
       case "draft" :: xs => xs match {
